@@ -1,7 +1,5 @@
 # HikeManager
 
-**Посилання на репозиторій:**[ (https://github.com/teyshaa/Camping)](https://github.com/teyshaa/Camping)
-
 ## Картка проєкту
 
 ### Склад команди та відповідальність учасників
