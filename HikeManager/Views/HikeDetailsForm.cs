@@ -6,24 +6,15 @@ using HikeManager.Services;
 
 namespace HikeManager.Views
 {
-    /// <summary>
-    /// Вікно деталей конкретного походу.
-    /// Шапка: назва, дати, маршрут, складність, тривалість (через RouteService).
-    /// Тіло: TabControl із вкладками Учасники / Спорядження / Фінанси.
-    /// Вкладки містять заглушки — будуть заповнені Учасниками 3 та 4.
-    /// </summary>
     public class HikeDetailsForm : Form
     {
         private readonly Hike          _hike;
         private readonly IRouteService _routeService;
-
-        // ── Конструктор ───────────────────────────────────────────────────
         public HikeDetailsForm(Hike hike, IRouteService? routeService = null)
         {
             _hike         = hike ?? throw new ArgumentNullException(nameof(hike));
             _routeService = routeService ?? new RouteService();
 
-            // ── Параметри форми ───────────────────────────────────────────
             Text            = $"Деталі: {_hike.Name}";
             Size            = new Size(760, 600);
             MinimumSize     = new Size(680, 520);
@@ -34,7 +25,6 @@ namespace HikeManager.Views
             BackColor       = Color.FromArgb(235, 245, 235);
             Font            = new Font("Segoe UI", 10f, FontStyle.Regular);
 
-            // ── Зовнішній контейнер з відступами ─────────────────────────
             Panel outer = new Panel
             {
                 Dock      = DockStyle.Fill,
@@ -42,13 +32,9 @@ namespace HikeManager.Views
                 BackColor = Theme.BackgroundColor
             };
 
-            // ── Шапка: картка з інформацією про похід ────────────────────
             Panel headerCard = BuildHeaderCard();
-
-            // ── TabControl із вкладками ───────────────────────────────────
             TabControl tabs = BuildTabControl();
 
-            // Кнопка закрити (внизу праворуч)
             Button btnClose = new Button { Text = "Закрити", Width = 110, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
             btnClose.FlatStyle                  = FlatStyle.Flat;
             btnClose.FlatAppearance.BorderColor = Color.Gray;
@@ -70,20 +56,18 @@ namespace HikeManager.Views
             btnClose.Anchor   = AnchorStyles.Right | AnchorStyles.Top;
             bottomPanel.Controls.Add(btnClose);
 
-            outer.Controls.Add(tabs);          // Fill — займає решту
-            outer.Controls.Add(headerCard);    // Top
-            outer.Controls.Add(bottomPanel);   // Bottom
+            outer.Controls.Add(tabs);          
+            outer.Controls.Add(headerCard);    
+            outer.Controls.Add(bottomPanel);   
 
             Controls.Add(outer);
         }
 
-        // ── Будує картку шапки ────────────────────────────────────────────
         private Panel BuildHeaderCard()
         {
-            // Отримуємо маршрут для складності (Difficulty)
             Route? route = null;
             try { route = _routeService.GetById(_hike.RouteId); }
-            catch { /* не критично — покажемо «—» */ }
+            catch {  }
 
             string difficulty = route?.Difficulty ?? "—";
             string location   = route?.Location   ?? "—";
@@ -111,7 +95,6 @@ namespace HikeManager.Views
             };
             card.Controls.Add(lblName);
 
-            // Решта полів — дві колонки метаданих
             int col1X = 20;
             int col2X = 370;
             int startY = 70;
@@ -132,7 +115,6 @@ namespace HikeManager.Views
                 $"{_hike.DurationDays} дн.",
                 col2X, startY + 30);
 
-            // Нижня роздільна лінія
             Panel divider = new Panel
             {
                 BackColor = Theme.BorderColor,
@@ -145,7 +127,6 @@ namespace HikeManager.Views
             return card;
         }
 
-        // ── Будує TabControl ──────────────────────────────────────────────
         private TabControl BuildTabControl()
         {
             var tabs = new TabControl
@@ -162,12 +143,11 @@ namespace HikeManager.Views
             return tabs;
         }
 
-        // ── Вкладка «Учасники» ────────────────────────────────────────────
+        // ── Вкладка «Учасники» 
         private TabPage BuildParticipantsTab()
         {
             var page = new TabPage("👥  Учасники") { BackColor = Theme.CardBackground };
 
-            // TODO (Учасник 3): замінити заглушку на ParticipantsView(_hike.Id)
             page.Controls.Add(BuildPlaceholder(
                 "👥  Учасники",
                 $"Тут будуть учасники походу «{_hike.Name}».\n" +
@@ -176,12 +156,10 @@ namespace HikeManager.Views
             return page;
         }
 
-        // ── Вкладка «Спорядження» ─────────────────────────────────────────
+        // ── Вкладка «Спорядження» 
         private TabPage BuildEquipmentTab()
         {
             var page = new TabPage("🎒  Спорядження") { BackColor = Theme.CardBackground };
-
-            // TODO (Учасник 4): замінити заглушку на EquipmentView(_hike.Id)
             page.Controls.Add(BuildPlaceholder(
                 "🎒  Спорядження",
                 $"Тут буде список спорядження для походу «{_hike.Name}».\n" +
@@ -190,12 +168,10 @@ namespace HikeManager.Views
             return page;
         }
 
-        // ── Вкладка «Фінанси» ────────────────────────────────────────────
+        // ── Вкладка «Фінанси» 
         private TabPage BuildFinancesTab()
         {
             var page = new TabPage("💰  Фінанси") { BackColor = Theme.CardBackground };
-
-            // TODO (Учасник 4): замінити заглушку на ExpensesView(_hike.Id)
             page.Controls.Add(BuildPlaceholder(
                 "💰  Фінанси",
                 $"Тут буде облік витрат для походу «{_hike.Name}».\n" +
@@ -204,12 +180,9 @@ namespace HikeManager.Views
             return page;
         }
 
-        // ── Будує центровану заглушку для вкладки ─────────────────────────
         private static Panel BuildPlaceholder(string title, string description)
         {
             Panel wrapper = new Panel { Dock = DockStyle.Fill, BackColor = Theme.CardBackground };
-
-            // Іконка/заголовок
             Label lblTitle = new Label
             {
                 Text      = title,
@@ -231,7 +204,6 @@ namespace HikeManager.Views
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
-            // Вертикальний FlowLayout для центрування
             FlowLayoutPanel flow = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.TopDown,
@@ -243,7 +215,6 @@ namespace HikeManager.Views
             flow.Controls.Add(lblTitle);
             flow.Controls.Add(lblDesc);
 
-            // Центруємо flow всередині wrapper після завантаження
             wrapper.Resize += (s, e) =>
             {
                 flow.Location = new Point(
@@ -255,7 +226,6 @@ namespace HikeManager.Views
             return wrapper;
         }
 
-        // ── Допоміжний метод: рядок «Мітка: Значення» у шапці ───────────
         private static void AddInfoRow(Panel parent, string label, string value, int x, int y)
         {
             parent.Controls.Add(new Label

@@ -15,18 +15,12 @@ namespace HikeManager.Services
         private readonly HikeRepository _hikeRepository;
         private readonly IRouteService  _routeService;
 
-        // Конструктор із підтримкою DI та значеннями за замовчуванням —
-        // дозволяє використовувати без IoC-контейнера: new HikeService().
         public HikeService(HikeRepository? hikeRepository = null,
                            IRouteService?  routeService   = null)
         {
             _hikeRepository = hikeRepository ?? new HikeRepository();
             _routeService   = routeService   ?? new RouteService();
         }
-
-        // ----------------------------------------------------------------
-        // Запити (читання)
-        // ----------------------------------------------------------------
 
         /// <summary>
         /// Активні походи: EndDate >= сьогодні. Сортування за зростанням дати початку.
@@ -61,10 +55,6 @@ namespace HikeManager.Services
             return _hikeRepository.GetById(id);
         }
 
-        // ----------------------------------------------------------------
-        // Команди (запис)
-        // ----------------------------------------------------------------
-
         /// <summary>Валідує та створює новий похід.</summary>
         public void Create(Hike hike)
         {
@@ -97,9 +87,6 @@ namespace HikeManager.Services
             _hikeRepository.Delete(id);
         }
 
-        // ----------------------------------------------------------------
-        // Валідація
-        // ----------------------------------------------------------------
         private void Validate(Hike hike)
         {
             if (hike == null)

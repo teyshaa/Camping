@@ -8,12 +8,9 @@ namespace HikeManager.DataAccess
 {
     public class HikeRepository
     {
-        // Єдиний формат дати, що використовується скрізь для запису і читання.
         private const string DateFormat = "yyyy-MM-dd";
 
-        // ----------------------------------------------------------------
         // GetAll  — повертає всі походи з JOIN на ROUTES
-        // ----------------------------------------------------------------
         public List<Hike> GetAll()
         {
             var hikes = new List<Hike>();
@@ -43,9 +40,7 @@ namespace HikeManager.DataAccess
             return hikes;
         }
 
-        // ----------------------------------------------------------------
         // GetById — повертає один похід або null
-        // ----------------------------------------------------------------
         public Hike? GetById(int id)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -77,9 +72,7 @@ namespace HikeManager.DataAccess
             return null;
         }
 
-        // ----------------------------------------------------------------
         // Insert — додає новий похід, встановлює Id у переданому об'єкті
-        // ----------------------------------------------------------------
         public void Insert(Hike hike)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -101,9 +94,7 @@ namespace HikeManager.DataAccess
             }
         }
 
-        // ----------------------------------------------------------------
         // Update — оновлює існуючий запис
-        // ----------------------------------------------------------------
         public void Update(Hike hike)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -128,11 +119,7 @@ namespace HikeManager.DataAccess
             }
         }
 
-        // ----------------------------------------------------------------
         // Delete — видаляє похід за Id.
-        //          Завдяки ON DELETE CASCADE у схемі БД (Учасник 1)
-        //          автоматично видаляються учасники, спорядження та витрати.
-        // ----------------------------------------------------------------
         public void Delete(int id)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -147,9 +134,7 @@ namespace HikeManager.DataAccess
             }
         }
 
-        // ----------------------------------------------------------------
         // Приватний маппер рядка → Hike
-        // ----------------------------------------------------------------
         private static Hike MapRowToHike(SQLiteDataReader reader)
         {
             return new Hike
