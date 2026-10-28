@@ -8,6 +8,7 @@ namespace HikeManager.Models
         public string Difficulty { get; set; } = "Легкий";
         public int DurationDays { get; set; } = 1;
         public double? LengthKm { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public override string ToString() => Name;
     }

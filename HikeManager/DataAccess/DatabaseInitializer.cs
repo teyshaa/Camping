@@ -20,7 +20,8 @@ namespace HikeManager.DataAccess
                             Location TEXT,
                             Difficulty TEXT NOT NULL,
                             DurationDays INTEGER NOT NULL,
-                            LengthKm REAL
+                            LengthKm REAL,
+                            IsDeleted INTEGER NOT NULL DEFAULT 0
                         );
 
                         CREATE TABLE IF NOT EXISTS HIKES (
@@ -28,6 +29,7 @@ namespace HikeManager.DataAccess
                             Name TEXT NOT NULL,
                             StartDate TEXT NOT NULL,
                             RouteId INTEGER NOT NULL,
+                            IsDeleted INTEGER NOT NULL DEFAULT 0,
                             FOREIGN KEY(RouteId) REFERENCES ROUTES(Id)
                         );
 
@@ -65,6 +67,10 @@ namespace HikeManager.DataAccess
 
                     ExecuteCommand(createTables, connection);
 
+                    // Міграція для вже існуючих БД: додаємо стовпчик IsDeleted, якщо його ще немає
+                    EnsureColumnExists(connection, "HIKES", "IsDeleted", "INTEGER NOT NULL DEFAULT 0");
+                    EnsureColumnExists(connection, "ROUTES", "IsDeleted", "INTEGER NOT NULL DEFAULT 0");
+
                     // 3. Засівання демо-маршрутів, якщо таблиця ROUTES порожня
                     SeedDemoRoutesIfEmpty(connection);
                 }
@@ -72,6 +78,27 @@ namespace HikeManager.DataAccess
             catch (Exception ex)
             {
                 MessageBox.Show("Помилка ініціалізації бази даних: " + ex.Message, "Помилка БД", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private static void EnsureColumnExists(SQLiteConnection connection, string table, string column, string columnDef)
+        {
+            try
+            {
+                using (var cmd = new SQLiteCommand($"PRAGMA table_info({table});", connection))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (string.Equals(reader["name"]?.ToString(), column, StringComparison.OrdinalIgnoreCase))
+                            return; // Стовпчик уже існує
+                    }
+                }
+                ExecuteCommand($"ALTER TABLE {table} ADD COLUMN {column} {columnDef};", connection);
+            }
+            catch
+            {
+                // Якщо помилка (наприклад, колонка вже є) — не ламаємо запуск
             }
         }
 

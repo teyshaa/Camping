@@ -11,5 +11,7 @@ namespace HikeManager.Services
         void Create(Hike hike);
         void Update(Hike hike);
         void Delete(int id);
+        void RestoreHike(int id);
+        void HardDelete(int id);
     }
 }

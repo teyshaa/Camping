@@ -8,6 +8,7 @@ namespace HikeManager.Models
         public string Name { get; set; } = string.Empty;
         public DateTime StartDate { get; set; } = DateTime.Today;
         public int RouteId { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         // Додаткові властивості для UI — не зберігаються напряму в БД,
         // але заповнюються через JOIN у HikeRepository.GetAll() та GetById().

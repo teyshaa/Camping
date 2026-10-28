@@ -22,7 +22,12 @@ namespace HikeManager.Services
 
         public List<Route> GetAll()
         {
-            return _repository.GetAll();
+            return _repository.GetAll().FindAll(r => !r.IsDeleted);
+        }
+
+        public List<Route> GetHistory()
+        {
+            return _repository.GetAll().FindAll(r => r.IsDeleted);
         }
 
         public Route? GetById(int id)
@@ -68,10 +73,43 @@ namespace HikeManager.Services
                 throw new ValidationException("Маршрут не знайдено.");
             }
 
+            // М'яке видалення: переносимо в історію
+            _repository.SoftDelete(id);
+        }
+
+        public void Restore(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ValidationException("Некоректний ідентифікатор маршруту.");
+            }
+
+            var existing = _repository.GetById(id);
+            if (existing == null)
+            {
+                throw new ValidationException("Маршрут не знайдено.");
+            }
+
+            _repository.Restore(id);
+        }
+
+        public void HardDelete(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ValidationException("Некоректний ідентифікатор маршруту.");
+            }
+
+            var existing = _repository.GetById(id);
+            if (existing == null)
+            {
+                throw new ValidationException("Маршрут не знайдено.");
+            }
+
             int countHikes = _repository.CountHikesUsingRoute(id);
             if (countHikes > 0)
             {
-                throw new ValidationException($"Неможливо видалити маршрут «{existing.Name}», оскільки він використовується у {countHikes} поході(ах).");
+                throw new ValidationException($"Неможливо остаточно видалити маршрут «{existing.Name}», оскільки він використовується у {countHikes} активному поході(ах).");
             }
 
             _repository.Delete(id);

@@ -22,8 +22,8 @@ namespace HikeManager.Views
             FormBorderStyle = FormBorderStyle.Sizable;
             MaximizeBox     = true;
             MinimizeBox     = false;
-            BackColor       = Color.FromArgb(235, 245, 235);
-            Font            = new Font("Segoe UI", 10f, FontStyle.Regular);
+            BackColor       = Theme.BackgroundColor;
+            Font            = Theme.RegularFont;
 
             Panel outer = new Panel
             {
@@ -36,14 +36,7 @@ namespace HikeManager.Views
             TabControl tabs = BuildTabControl();
 
             Button btnClose = new Button { Text = "Закрити", Width = 110, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
-            btnClose.FlatStyle                  = FlatStyle.Flat;
-            btnClose.FlatAppearance.BorderColor = Color.Gray;
-            btnClose.FlatAppearance.BorderSize  = 1;
-            btnClose.BackColor                  = Color.White;
-            btnClose.ForeColor                  = Color.Black;
-            btnClose.Font                       = new Font("Segoe UI", 10f, FontStyle.Bold);
-            btnClose.Cursor                     = Cursors.Hand;
-            btnClose.Height                     = 38;
+            Theme.StyleSecondaryButton(btnClose);
             btnClose.Click += (s, e) => Close();
 
             Panel bottomPanel = new Panel
@@ -78,7 +71,7 @@ namespace HikeManager.Views
             Panel card = new Panel
             {
                 Dock      = DockStyle.Top,
-                Height    = 160,
+                Height    = 150,
                 BackColor = Theme.CardBackground,
                 Padding   = new Padding(20, 16, 20, 12),
                 Margin    = new Padding(0, 0, 0, 16)
@@ -88,8 +81,8 @@ namespace HikeManager.Views
             Label lblName = new Label
             {
                 Text      = _hike.Name,
-                Font      = new Font("Segoe UI", 16f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(40, 75, 60),
+                Font      = Theme.SubtitleFont,
+                ForeColor = Theme.PrimaryColor,
                 AutoSize  = true,
                 Location  = new Point(20, 14)
             };
@@ -97,7 +90,7 @@ namespace HikeManager.Views
 
             int col1X = 20;
             int col2X = 370;
-            int startY = 70;
+            int startY = 65;
 
             AddInfoRow(card, "📅  Дата:",
                 $"{_hike.StartDate:dd.MM.yyyy}  —  {_hike.EndDate:dd.MM.yyyy}",
