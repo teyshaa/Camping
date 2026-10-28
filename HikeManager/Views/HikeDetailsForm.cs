@@ -164,11 +164,19 @@ namespace HikeManager.Views
         // ── Вкладка «Фінанси» 
         private TabPage BuildFinancesTab()
         {
-            var page = new TabPage("💰  Фінанси") { BackColor = Theme.CardBackground };
-            page.Controls.Add(BuildPlaceholder(
-                "💰  Фінанси",
-                $"Тут буде облік витрат для походу «{_hike.Name}».\n" +
-                "Цей розділ розробляється Учасником 4."));
+            var page = new TabPage("💰 Фінанси")
+            {
+                BackColor = Theme.CardBackground
+            };
+
+            var expensesView = new ExpensesView();
+
+            expensesView.SetHikeProvider(id =>
+                id == _hike.Id ? _hike : null);
+
+            expensesView.LoadHike(_hike.Id);
+
+            page.Controls.Add(expensesView);
 
             return page;
         }
