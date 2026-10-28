@@ -167,10 +167,10 @@ namespace HikeManager.Views
         private TabPage BuildFinancesTab()
         {
             var page = new TabPage("💰  Фінанси") { BackColor = Theme.BackgroundColor };
-            var view = new ExpensesView();
-            view.SetHikeProvider(id => _hike);
-            view.LoadHike(_hike.Id);
-            page.Controls.Add(view);
+            var expensesView = new ExpensesView();
+            expensesView.SetHikeProvider(id => id == _hike.Id ? _hike : null);
+            expensesView.LoadHike(_hike.Id);
+            page.Controls.Add(expensesView);
             return page;
         }
 
