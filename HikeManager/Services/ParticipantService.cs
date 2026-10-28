@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using HikeManager.Models;
@@ -6,13 +6,13 @@ using HikeManager.DataAccess;
 
 namespace HikeManager.Services
 {
-    public class ParticipantService
+    public class ParticipantService : IParticipantService
     {
         private readonly ParticipantRepository _repository;
 
-        public ParticipantService()
+        public ParticipantService(ParticipantRepository? repository = null)
         {
-            _repository = new ParticipantRepository();
+            _repository = repository ?? new ParticipantRepository();
         }
 
         public List<Participant> GetByHike(int hikeId)
@@ -25,14 +25,24 @@ namespace HikeManager.Services
             return _repository.CountByHike(hikeId);
         }
 
-        public void Save(Participant p)
+        public void Add(Participant p)
         {
             Validate(p);
+            _repository.Insert(p);
+        }
 
+        public void Update(Participant p)
+        {
+            Validate(p);
+            _repository.Update(p);
+        }
+
+        public void Save(Participant p)
+        {
             if (p.Id == 0)
-                _repository.Insert(p);
+                Add(p);
             else
-                _repository.Update(p);
+                Update(p);
         }
 
         public void Delete(int id)
@@ -42,7 +52,7 @@ namespace HikeManager.Services
 
         private void Validate(Participant p)
         {
-            p.FullName = p.FullName?.Trim();
+            p.FullName = p.FullName?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(p.FullName))
             {
                 throw new ValidationException("ПІБ учасника є обов'язковим.");

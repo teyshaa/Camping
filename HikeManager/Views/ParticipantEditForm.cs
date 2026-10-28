@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using HikeManager.Models;
@@ -11,13 +11,13 @@ namespace HikeManager.Views
         private readonly ParticipantService _service;
         public Participant Participant { get; private set; }
 
-        private TextBox _txtFullName;
-        private TextBox _txtPhone;
-        private TextBox _txtNote;
-        private Button _btnSave;
-        private Button _btnCancel;
+        private TextBox _txtFullName = null!;
+        private TextBox _txtPhone = null!;
+        private TextBox _txtNote = null!;
+        private Button _btnSave = null!;
+        private Button _btnCancel = null!;
 
-        public ParticipantEditForm(int hikeId, Participant participant = null)
+        public ParticipantEditForm(int hikeId, Participant? participant = null)
         {
             _service = new ParticipantService();
             // Якщо редагуємо — беремо існуючого, якщо створюємо — нового з цим hikeId
@@ -30,37 +30,45 @@ namespace HikeManager.Views
         private void SetupUI()
         {
             this.Text = Participant.Id == 0 ? "Додати учасника" : "Редагувати учасника";
-            this.Size = new Size(400, 320);
+            this.Size = new Size(420, 340);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.BackColor = Color.FromArgb(235, 245, 235);
+            this.BackColor = Theme.BackgroundColor;
+            this.Font = Theme.RegularFont;
 
-            Label lblFullName = new Label { Text = "ПІБ *", Location = new Point(20, 20), AutoSize = true, Font = new Font("Segoe UI", 9, FontStyle.Bold) };
-            _txtFullName = new TextBox { Location = new Point(20, 45), Width = 340 };
+            Label lblFullName = new Label { Text = "ПІБ *", Location = new Point(24, 18), AutoSize = true, Font = Theme.BoldFont, ForeColor = Theme.TextPrimary };
+            _txtFullName = new TextBox { Location = new Point(24, 42), Width = 355, Font = Theme.RegularFont };
 
-            Label lblPhone = new Label { Text = "Телефон", Location = new Point(20, 85), AutoSize = true };
-            _txtPhone = new TextBox { Location = new Point(20, 110), Width = 340 };
+            Label lblPhone = new Label { Text = "Телефон (напр. +380501234567)", Location = new Point(24, 82), AutoSize = true, Font = Theme.BoldFont, ForeColor = Theme.TextPrimary };
+            _txtPhone = new TextBox { Location = new Point(24, 106), Width = 355, Font = Theme.RegularFont };
 
-            Label lblNote = new Label { Text = "Примітка", Location = new Point(20, 150), AutoSize = true };
-            _txtNote = new TextBox { Location = new Point(20, 175), Width = 340 };
+            Label lblNote = new Label { Text = "Примітка", Location = new Point(24, 146), AutoSize = true, Font = Theme.BoldFont, ForeColor = Theme.TextPrimary };
+            _txtNote = new TextBox { Location = new Point(24, 170), Width = 355, Font = Theme.RegularFont };
 
             _btnSave = new Button
             {
                 Text = "Зберегти",
-                Location = new Point(160, 225),
-                Width = 90,
-                Height = 35,
-                BackColor = Color.FromArgb(40, 75, 60),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat
+                Location = new Point(165, 230),
+                Width = 100,
+                DialogResult = DialogResult.None
             };
-            _btnSave.FlatAppearance.BorderSize = 0;
+            Theme.StylePrimaryButton(_btnSave);
             _btnSave.Click += BtnSave_Click;
 
-            _btnCancel = new Button { Text = "Скасувати", Location = new Point(260, 225), Width = 90, Height = 35 };
+            _btnCancel = new Button
+            {
+                Text = "Скасувати",
+                Location = new Point(275, 230),
+                Width = 100,
+                DialogResult = DialogResult.Cancel
+            };
+            Theme.StyleSecondaryButton(_btnCancel);
             _btnCancel.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
+
+            this.AcceptButton = _btnSave;
+            this.CancelButton = _btnCancel;
 
             this.Controls.Add(lblFullName);
             this.Controls.Add(_txtFullName);
@@ -79,7 +87,7 @@ namespace HikeManager.Views
             _txtNote.Text = Participant.Note;
         }
 
-        private void BtnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object? sender, EventArgs e)
         {
             Participant.FullName = _txtFullName.Text;
             Participant.Phone = _txtPhone.Text;
