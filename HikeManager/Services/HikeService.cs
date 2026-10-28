@@ -23,27 +23,25 @@ namespace HikeManager.Services
         }
 
         /// <summary>
-        /// Активні походи: EndDate >= сьогодні. Сортування за зростанням дати початку.
+        /// Активні походи: не видалені (IsDeleted == false). Сортування за зростанням дати початку.
         /// </summary>
         public List<Hike> GetActive()
         {
-            var today = DateTime.Today;
             return _hikeRepository
                 .GetAll()
-                .Where(h => h.EndDate >= today)
+                .Where(h => !h.IsDeleted)
                 .OrderBy(h => h.StartDate)
                 .ToList();
         }
 
         /// <summary>
-        /// Архів: EndDate < сьогодні. Сортування за спаданням (найновіші першими).
+        /// Історія походів: видалені походи (IsDeleted == true). Сортування за спаданням дати початку.
         /// </summary>
         public List<Hike> GetHistory()
         {
-            var today = DateTime.Today;
             return _hikeRepository
                 .GetAll()
-                .Where(h => h.EndDate < today)
+                .Where(h => h.IsDeleted)
                 .OrderByDescending(h => h.StartDate)
                 .ToList();
         }
@@ -75,8 +73,32 @@ namespace HikeManager.Services
             _hikeRepository.Update(hike);
         }
 
-        /// <summary>Видаляє похід за Id (каскад на учасників/спорядження/витрати).</summary>
+        /// <summary>Видаляє похід зі списку активних і переносить його в історію (soft-delete).</summary>
         public void Delete(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("Некоректний ідентифікатор походу.");
+
+            if (_hikeRepository.GetById(id) == null)
+                throw new ValidationException("Похід не знайдено.");
+
+            _hikeRepository.SoftDelete(id);
+        }
+
+        /// <summary>Відновлює похід з історії назад у список активних походів.</summary>
+        public void RestoreHike(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("Некоректний ідентифікатор походу.");
+
+            if (_hikeRepository.GetById(id) == null)
+                throw new ValidationException("Похід не знайдено.");
+
+            _hikeRepository.Restore(id);
+        }
+
+        /// <summary>Остаточно видаляє похід з бази даних (разом із пов'язаними записами).</summary>
+        public void HardDelete(int id)
         {
             if (id <= 0)
                 throw new ValidationException("Некоректний ідентифікатор походу.");

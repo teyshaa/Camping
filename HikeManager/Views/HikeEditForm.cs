@@ -27,6 +27,8 @@ namespace HikeManager.Views
         private readonly ErrorProvider  _errorProvider;
 
         // ── Конструктор ───────────────────────────────────────────────────
+        public HikeEditForm(Hike? existingHike = null,
+                            IHikeService? hikeService = null,
         public HikeEditForm(Hike?          existingHike = null,
                             IHikeService?  hikeService  = null,
                             IRouteService? routeService = null)
@@ -42,6 +44,8 @@ namespace HikeManager.Views
                       Id        = existingHike!.Id,
                       Name      = existingHike.Name,
                       StartDate = existingHike.StartDate,
+                      RouteId   = existingHike.RouteId,
+                      IsDeleted = existingHike.IsDeleted
                       RouteId   = existingHike.RouteId
                   }
                 : new Hike { StartDate = DateTime.Today };
@@ -55,6 +59,8 @@ namespace HikeManager.Views
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox     = false;
             MinimizeBox     = false;
+            BackColor       = Theme.BackgroundColor;
+            Font            = Theme.RegularFont;
             BackColor       = Color.FromArgb(235, 245, 235);
             Font            = new Font("Segoe UI", 10f, FontStyle.Regular);
 
@@ -63,6 +69,77 @@ namespace HikeManager.Views
             {
                 BackColor = Theme.CardBackground,
                 Location  = new Point(20, 20),
+                Size      = new Size(445, 280),
+                Padding   = new Padding(24)
+            };
+
+            Label lblFormTitle = new Label
+            {
+                Text      = Text,
+                Font      = Theme.SubtitleFont,
+                ForeColor = Theme.PrimaryColor,
+                AutoSize  = true,
+                Location  = new Point(20, 16)
+            };
+            card.Controls.Add(lblFormTitle);
+
+            int y = 62;
+            const int IX = 175;   // X початку поля вводу
+            const int IW = 240;   // ширина поля вводу
+            const int RH = 48;    // висота рядка
+
+            // ── Поле: Назва ───────────────────────────────────────────────
+            card.Controls.Add(MakeLabel("Назва походу *:", 20, y));
+            _txtName = new TextBox { Location = new Point(IX, y - 2), Width = IW, Text = _hike.Name };
+            card.Controls.Add(_txtName);
+            y += RH;
+
+            // ── Поле: Дата початку ────────────────────────────────────────
+            card.Controls.Add(MakeLabel("Дата початку *:", 20, y));
+            _dtpStartDate = new DateTimePicker
+            {
+                Location     = new Point(IX, y - 2),
+                Width        = IW,
+                Format       = DateTimePickerFormat.Custom,
+                CustomFormat = "dd.MM.yyyy",
+                Value        = _hike.StartDate
+            };
+            card.Controls.Add(_dtpStartDate);
+            y += RH;
+
+            // ── Поле: Маршрут (ComboBox) ──────────────────────────────────
+            card.Controls.Add(MakeLabel("Маршрут *:", 20, y));
+            _cboRoute = new ComboBox
+            {
+                Location      = new Point(IX, y - 2),
+                Width         = IW,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                DisplayMember = "Name",   // відображається назва маршруту
+                ValueMember   = "Id"      // значення — Id маршруту
+            };
+            card.Controls.Add(_cboRoute);
+            y += RH + 16;
+
+            // «Зберегти» — кнопка головної дії
+            _btnSave = new Button
+            {
+                Text         = "Зберегти",
+                Location     = new Point(IX, y),
+                Width        = 115,
+                DialogResult = DialogResult.None
+            };
+            Theme.StylePrimaryButton(_btnSave);
+            _btnSave.Click += BtnSave_Click;
+
+            // «Скасувати» — другорядна кнопка
+            Button btnCancel = new Button
+            {
+                Text         = "Скасувати",
+                Location     = new Point(IX + 125, y),
+                Width        = 115,
+                DialogResult = DialogResult.Cancel
+            };
+            Theme.StyleSecondaryButton(btnCancel);
                 Size      = new Size(445, 290),
                 Padding   = new Padding(24)
             };
