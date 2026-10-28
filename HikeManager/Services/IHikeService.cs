@@ -10,5 +10,6 @@ namespace HikeManager.Services
         Hike? GetById(int id);
         void Create(Hike hike);
         void Update(Hike hike);
+        void Delete(int id);
     }
 }
