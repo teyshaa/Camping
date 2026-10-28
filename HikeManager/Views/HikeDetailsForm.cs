@@ -139,45 +139,31 @@ namespace HikeManager.Views
         // ── Вкладка «Учасники» 
         private TabPage BuildParticipantsTab()
         {
-            var page = new TabPage("👥  Учасники") { BackColor = Theme.CardBackground };
-
-            page.Controls.Add(BuildPlaceholder(
-                "👥  Учасники",
-                $"Тут будуть учасники походу «{_hike.Name}».\n" +
-                "Цей розділ розробляється Учасником 3."));
-
+            var page = new TabPage("👥  Учасники") { BackColor = Theme.BackgroundColor };
+            var view = new ParticipantsView();
+            view.LoadHike(_hike.Id);
+            page.Controls.Add(view);
             return page;
         }
 
         // ── Вкладка «Спорядження» 
         private TabPage BuildEquipmentTab()
         {
-            var page = new TabPage("🎒  Спорядження") { BackColor = Theme.CardBackground };
-            page.Controls.Add(BuildPlaceholder(
-                "🎒  Спорядження",
-                $"Тут буде список спорядження для походу «{_hike.Name}».\n" +
-                "Цей розділ розробляється Учасником 4."));
-
+            var page = new TabPage("🎒  Спорядження") { BackColor = Theme.BackgroundColor };
+            var view = new EquipmentView();
+            view.LoadHike(_hike.Id);
+            page.Controls.Add(view);
             return page;
         }
 
         // ── Вкладка «Фінанси» 
         private TabPage BuildFinancesTab()
         {
-            var page = new TabPage("💰 Фінанси")
-            {
-                BackColor = Theme.CardBackground
-            };
-
+            var page = new TabPage("💰  Фінанси") { BackColor = Theme.BackgroundColor };
             var expensesView = new ExpensesView();
-
-            expensesView.SetHikeProvider(id =>
-                id == _hike.Id ? _hike : null);
-
+            expensesView.SetHikeProvider(id => id == _hike.Id ? _hike : null);
             expensesView.LoadHike(_hike.Id);
-
             page.Controls.Add(expensesView);
-
             return page;
         }
 

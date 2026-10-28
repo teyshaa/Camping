@@ -73,6 +73,9 @@ namespace HikeManager.DataAccess
 
                     // 3. Засівання демо-маршрутів, якщо таблиця ROUTES порожня
                     SeedDemoRoutesIfEmpty(connection);
+
+                    // 4. Засівання демо-походів, учасників та спорядження, якщо таблиця HIKES порожня
+                    SeedDemoHikesIfEmpty(connection);
                 }
             }
             catch (Exception ex)
@@ -116,6 +119,82 @@ namespace HikeManager.DataAccess
                         ('Полонина Боржава', 'Закарпаття, Воловець', 'Легкий', 1, 12.0);
                     ";
                     ExecuteCommand(insertSeed, connection);
+                }
+            }
+        }
+
+        private static void SeedDemoHikesIfEmpty(SQLiteConnection connection)
+        {
+            using (var checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM HIKES;", connection))
+            {
+                long count = Convert.ToInt64(checkCmd.ExecuteScalar());
+                if (count == 0)
+                {
+                    // Отримуємо реальні Id маршрутів із бази для запобігання помилки Foreign Key
+                    var routeIds = new List<int>();
+                    using (var routeCmd = new SQLiteCommand("SELECT Id FROM ROUTES ORDER BY Id ASC LIMIT 2;", connection))
+                    using (var reader = routeCmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            routeIds.Add(reader.GetInt32(0));
+                        }
+                    }
+
+                    if (routeIds.Count > 0)
+                    {
+                        int routeId1 = routeIds[0];
+                        string todayStr = DateTime.Today.ToString("yyyy-MM-dd");
+
+                        using (var insertHike = new SQLiteCommand(
+                            "INSERT INTO HIKES (Name, StartDate, RouteId) VALUES (@name, @date, @routeId);", connection))
+                        {
+                            insertHike.Parameters.AddWithValue("@name", "Осінній підйом на Чорногору");
+                            insertHike.Parameters.AddWithValue("@date", todayStr);
+                            insertHike.Parameters.AddWithValue("@routeId", routeId1);
+                            insertHike.ExecuteNonQuery();
+                        }
+
+                        long hikeId = connection.LastInsertRowId;
+
+                        // Якщо є другий маршрут, додамо й архівний похід
+                        if (routeIds.Count > 1)
+                        {
+                            string pastStr = DateTime.Today.AddMonths(-1).ToString("yyyy-MM-dd");
+                            using (var insertPastHike = new SQLiteCommand(
+                                "INSERT INTO HIKES (Name, StartDate, RouteId) VALUES (@name, @date, @routeId);", connection))
+                            {
+                                insertPastHike.Parameters.AddWithValue("@name", "Літній похід на Боржаву");
+                                insertPastHike.Parameters.AddWithValue("@date", pastStr);
+                                insertPastHike.Parameters.AddWithValue("@routeId", routeIds[1]);
+                                insertPastHike.ExecuteNonQuery();
+                            }
+                        }
+
+                        using (var cmd = new SQLiteCommand(connection))
+                        {
+                            cmd.CommandText = @"
+                                INSERT INTO PARTICIPANTS (HikeId, FullName, Phone, Note) VALUES
+                                (@hId, 'Христина Комар', '+380501234567', 'Керівник туристичної групи'),
+                                (@hId, 'Анастасія Юркевич', '+380679876543', 'Штурман'),
+                                (@hId, 'Анастасія Петричкович', '+380931112233', 'Відповідальна за аптечку'),
+                                (@hId, 'Анастасія Решетівська', '+380503334455', 'Фінансист походу');
+
+                                INSERT INTO EQUIPMENT_ITEMS (HikeId, Name, Quantity) VALUES
+                                (@hId, 'Намет туристичний 3-місний', 2),
+                                (@hId, 'Казанок армійський 5л', 1),
+                                (@hId, 'Газовий пальник', 2),
+                                (@hId, 'Аптечка групова', 1);
+
+                                INSERT INTO EXPENSES (HikeId, Category, Amount, Description) VALUES
+                                (@hId, 'Транспорт', 1200, 'Трансфер Івано-Франківськ — Ворохта'),
+                                (@hId, 'Харчування', 1800, 'Продукти харчування на 3 дні'),
+                                (@hId, 'Рекреаційний збір', 400, 'Вхід до Карпатського національного парку');
+                            ";
+                            cmd.Parameters.AddWithValue("@hId", hikeId);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
                 }
             }
         }
