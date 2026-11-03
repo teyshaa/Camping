@@ -20,7 +20,6 @@ namespace HikeManager.Views
         public ParticipantEditForm(int hikeId, Participant? participant = null)
         {
             _service = new ParticipantService();
-            // Якщо редагуємо — беремо існуючого, якщо створюємо — нового з цим hikeId
             Participant = participant ?? new Participant { HikeId = hikeId };
 
             SetupUI();
@@ -95,13 +94,11 @@ namespace HikeManager.Views
 
             try
             {
-                // Зберігаємо через сервіс (там спрацює наша валідація)
                 _service.Save(Participant);
                 this.DialogResult = DialogResult.OK;
             }
             catch (ValidationException ex)
             {
-                // Помилки валідації показуємо українською
                 MessageBox.Show(ex.Message, "Помилка вводу", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)

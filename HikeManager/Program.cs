@@ -2,9 +2,6 @@ namespace HikeManager
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main(string[] args)
         {
@@ -14,8 +11,6 @@ namespace HikeManager
                 return;
             }
 
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             HikeManager.DataAccess.DatabaseInitializer.Initialize();
             Application.Run(new Form1());
@@ -32,7 +27,6 @@ namespace HikeManager
             var equipService = new HikeManager.Services.EquipmentService();
             var hikeService = new HikeManager.Services.HikeService();
 
-            // Створюємо тестовий похід
             var testHike = new HikeManager.Models.Hike
             {
                 Name = "Тестовий похід валідації",
@@ -43,7 +37,6 @@ namespace HikeManager
             int hikeId = testHike.Id;
             Console.WriteLine($"[OK] Створено тестовий похід з ID = {hikeId}");
 
-            // 1. Тест: Учасник без ПІБ
             try
             {
                 partService.Add(new HikeManager.Models.Participant { HikeId = hikeId, FullName = "   " });
@@ -54,7 +47,6 @@ namespace HikeManager
                 Console.WriteLine($"[PASS] Валідація ПІБ успішна: {ex.Message}");
             }
 
-            // 2. Тест: Некоректний телефон (мало цифр)
             try
             {
                 partService.Add(new HikeManager.Models.Participant { HikeId = hikeId, FullName = "Іван Тестовий", Phone = "123" });
@@ -65,7 +57,6 @@ namespace HikeManager
                 Console.WriteLine($"[PASS] Валідація телефону успішна: {ex.Message}");
             }
 
-            // 3. Тест: Некоректні символи в телефоні
             try
             {
                 partService.Add(new HikeManager.Models.Participant { HikeId = hikeId, FullName = "Іван Тестовий", Phone = "+3805012345abc" });
@@ -76,7 +67,6 @@ namespace HikeManager
                 Console.WriteLine($"[PASS] Валідація формату телефону успішна: {ex.Message}");
             }
 
-            // 4. Тест: Додавання та CountByHike
             var validPart = new HikeManager.Models.Participant
             {
                 HikeId = hikeId,
@@ -88,7 +78,6 @@ namespace HikeManager
             int count = partService.CountByHike(hikeId);
             Console.WriteLine($"[PASS] Додано учасника. CountByHike = {count} (очікувалось >= 1)");
 
-            // 5. Тест: Спорядження з кількістю 0
             try
             {
                 equipService.Add(new HikeManager.Models.EquipmentItem { HikeId = hikeId, Name = "Казанок", Quantity = 0 });
@@ -99,7 +88,6 @@ namespace HikeManager
                 Console.WriteLine($"[PASS] Валідація кількості (0) успішна: {ex.Message}");
             }
 
-            // 6. Тест: Спорядження з порожньою назвою
             try
             {
                 equipService.Add(new HikeManager.Models.EquipmentItem { HikeId = hikeId, Name = "", Quantity = 1 });
@@ -110,7 +98,6 @@ namespace HikeManager
                 Console.WriteLine($"[PASS] Валідація порожньої назви успішна: {ex.Message}");
             }
 
-            // 7. Тест: Правило дублікатів (сумування кількості)
             equipService.Add(new HikeManager.Models.EquipmentItem { HikeId = hikeId, Name = "Термос 1л", Quantity = 2 });
             equipService.Add(new HikeManager.Models.EquipmentItem { HikeId = hikeId, Name = "термос 1л", Quantity = 3 });
             var items = equipService.GetByHike(hikeId);
@@ -124,11 +111,9 @@ namespace HikeManager
                 Console.WriteLine($"[FAIL] Очікувалось 1 запис з кількістю 5, отримано: count={thermoses.Count}");
             }
 
-            // 8. Тест: Бонус - Додати базовий набір
             int addedKit = equipService.AddBasicKit(hikeId);
             Console.WriteLine($"[PASS] Додано {addedKit} позицій базового набору.");
 
-            // 9. Тест: Видалення походу прибирає учасників і спорядження (ON DELETE CASCADE)
             hikeService.Delete(hikeId);
             int partsAfterDelete = partService.CountByHike(hikeId);
             var equipAfterDelete = equipService.GetByHike(hikeId);

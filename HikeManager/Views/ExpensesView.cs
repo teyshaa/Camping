@@ -148,14 +148,12 @@ namespace HikeManager.Views
             };
         }
 
-        // Підключення сервісу походів під час інтеграції
         public void SetHikeProvider(Func<int, Hike?> getHikeById)
         {
             _getHikeById = getHikeById
                 ?? throw new ArgumentNullException(nameof(getHikeById));
         }
 
-        // Завантаження фінансів конкретного походу
         public void LoadHike(int hikeId)
         {
             _currentHikeId = hikeId;
@@ -253,7 +251,6 @@ namespace HikeManager.Views
             }
         }
 
-        // Експорт повного TXT-звіту
         private void ExportReport()
         {
             if (_currentHikeId <= 0)
@@ -322,5 +319,4 @@ namespace HikeManager.Views
         }
     }
 }
-
 

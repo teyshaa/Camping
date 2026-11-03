@@ -20,14 +20,12 @@ namespace HikeManager
 
         private void SetupUI()
         {
-            // 1. Налаштування головної форми
             Text = "HikeManager — Керування гірськими походами";
             Size = new Size(1150, 720);
             MinimumSize = new Size(950, 600);
             StartPosition = FormStartPosition.CenterScreen;
             BackColor = Theme.BackgroundColor;
 
-            // 2. Ліве навігаційне меню
             Panel sideMenu = new Panel
             {
                 Dock = DockStyle.Left,
@@ -35,7 +33,6 @@ namespace HikeManager
                 BackColor = Theme.PrimaryColor
             };
 
-            // Логотип та бренд застосунку
             Panel logoPanel = new Panel
             {
                 Dock = DockStyle.Top,
@@ -64,18 +61,15 @@ namespace HikeManager
             logoPanel.Controls.Add(logoTitle);
             logoPanel.Controls.Add(logoSubtitle);
 
-            // Кнопки навігації
             Button btnRoutes = CreateMenuButton("Маршрути", () => ShowView(new RoutesView()));
             Button btnHikes = CreateMenuButton("Походи", () => ShowView(new HikesView(showHistory: false)));
             Button btnHistory = CreateMenuButton("Історія", () => ShowView(new HikesView(showHistory: true)));
 
-            // Порядок додавання для DockStyle.Top
             sideMenu.Controls.Add(btnHistory);
             sideMenu.Controls.Add(btnHikes);
             sideMenu.Controls.Add(btnRoutes);
             sideMenu.Controls.Add(logoPanel);
 
-            // 3. Основна робоча панель (контейнер для UserControl)
             _mainArea = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -85,7 +79,6 @@ namespace HikeManager
             Controls.Add(_mainArea);
             Controls.Add(sideMenu);
 
-            // 4. Початковий екран — Маршрути
             btnRoutes.PerformClick();
         }
 

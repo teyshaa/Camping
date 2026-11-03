@@ -149,7 +149,7 @@ namespace HikeManager.DataAccess
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
             {
-                string sql = "SELECT COUNT(*) FROM HIKES WHERE RouteId = @RouteId AND IsDeleted = 0;";
+                string sql = "SELECT COUNT(*) FROM HIKES WHERE RouteId = @RouteId;";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {

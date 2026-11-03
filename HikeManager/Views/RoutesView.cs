@@ -22,7 +22,6 @@ namespace HikeManager.Views
             BackColor = Theme.BackgroundColor;
             Font = Theme.RegularFont;
 
-            // Головна панель-контейнер із відступами
             Panel container = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -30,7 +29,6 @@ namespace HikeManager.Views
                 BackColor = Theme.BackgroundColor
             };
 
-            // Верхня панель дій
             Panel topPanel = new Panel
             {
                 Dock = DockStyle.Top,
@@ -56,7 +54,6 @@ namespace HikeManager.Views
                 Location = new Point(2, 42)
             };
 
-            // Кнопки дій праворуч
             FlowLayoutPanel actionPanel = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.RightToLeft,
@@ -108,7 +105,6 @@ namespace HikeManager.Views
             topPanel.Controls.Add(lblSubtitle);
             topPanel.Controls.Add(actionPanel);
 
-            // Таблиця
             Panel gridCard = new Panel
             {
                 Dock = DockStyle.Fill,

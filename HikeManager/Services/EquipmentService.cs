@@ -9,7 +9,6 @@ namespace HikeManager.Services
     {
         private readonly EquipmentRepository _repository;
 
-        // Статичний перелік базового набору спорядження (бонус)
         public static readonly List<(string Name, int Quantity)> DefaultBasicKit = new()
         {
             ("Намет туристичний", 1),
@@ -36,7 +35,6 @@ namespace HikeManager.Services
         {
             Validate(item);
 
-            // Правило для дублікатів: сумування кількості
             var existingItems = _repository.GetByHike(item.HikeId);
             var duplicate = existingItems.Find(x => string.Equals(x.Name?.Trim(), item.Name, StringComparison.OrdinalIgnoreCase));
 
@@ -81,10 +79,6 @@ namespace HikeManager.Services
             _repository.Delete(id);
         }
 
-        /// <summary>
-        /// Додає базовий набір спорядження, якщо таких найменувань ще немає в списку походу.
-        /// Повертає кількість доданих нових позицій.
-        /// </summary>
         public int AddBasicKit(int hikeId)
         {
             var existing = _repository.GetByHike(hikeId);

@@ -1,5 +1,3 @@
-﻿
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +8,7 @@ namespace HikeManager.Services
 {
     public class ExpenseService : IExpenseService
     {
-        private readonly ExpenseRepository repository = new ExpenseRepository();
+        private readonly ExpenseRepository _repository;
 
         public static readonly string[] Categories =
         {
@@ -20,9 +18,14 @@ namespace HikeManager.Services
             "Страхування"
         };
 
+        public ExpenseService(ExpenseRepository? repository = null)
+        {
+            _repository = repository ?? new ExpenseRepository();
+        }
+
         public List<Expense> GetByHike(int hikeId)
         {
-            return repository.GetByHike(hikeId);
+            return _repository.GetByHike(hikeId);
         }
 
         public void Add(Expense expense)
@@ -33,7 +36,7 @@ namespace HikeManager.Services
         public void Insert(Expense expense)
         {
             Validate(expense);
-            repository.Insert(expense);
+            _repository.Insert(expense);
         }
 
         public void Update(Expense expense)
@@ -42,7 +45,7 @@ namespace HikeManager.Services
                 throw new ValidationException("Некоректний ID витрати.");
 
             Validate(expense);
-            repository.Update(expense);
+            _repository.Update(expense);
         }
 
         public void Delete(int id)
@@ -50,7 +53,7 @@ namespace HikeManager.Services
             if (id <= 0)
                 throw new ValidationException("Некоректний ID витрати.");
 
-            repository.Delete(id);
+            _repository.Delete(id);
         }
 
         public static decimal ParseAmount(string text)

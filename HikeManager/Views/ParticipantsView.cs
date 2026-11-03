@@ -34,7 +34,6 @@ namespace HikeManager.Views
             BackColor = Theme.BackgroundColor;
             Font = Theme.RegularFont;
 
-            // Головна панель з відступами
             Panel container = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -42,7 +41,6 @@ namespace HikeManager.Views
                 BackColor = Theme.BackgroundColor
             };
 
-            // Верхня панель дій
             Panel topPanel = new Panel
             {
                 Dock = DockStyle.Top,
@@ -71,7 +69,6 @@ namespace HikeManager.Views
             topPanel.Controls.Add(lblTitle);
             topPanel.Controls.Add(_lblCounter);
 
-            // Кнопки праворуч
             FlowLayoutPanel actionPanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Right,
@@ -100,7 +97,6 @@ namespace HikeManager.Views
 
             topPanel.Controls.Add(actionPanel);
 
-            // Таблиця DataGridView
             _grid = new DataGridView
             {
                 Dock = DockStyle.Fill

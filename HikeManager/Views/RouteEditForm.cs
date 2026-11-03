@@ -36,7 +36,6 @@ namespace HikeManager.Views
 
             _errorProvider = new ErrorProvider { BlinkStyle = ErrorBlinkStyle.NeverBlink };
 
-            // Налаштування форми
             Text = existingRoute == null ? "Додавання нового маршруту" : "Редагування маршруту";
             Size = new Size(520, 480);
             StartPosition = FormStartPosition.CenterParent;
@@ -46,7 +45,6 @@ namespace HikeManager.Views
             BackColor = Theme.BackgroundColor;
             Font = Theme.RegularFont;
 
-            // Головна картка
             Panel card = new Panel
             {
                 BackColor = Theme.CardBackground,
@@ -70,7 +68,6 @@ namespace HikeManager.Views
             const int inputWidth = 260;
             const int rowHeight = 44;
 
-            // Назва
             Label lblName = CreateFieldLabel("Назва маршруту *:", 20, currentY);
             _txtName = new TextBox
             {
@@ -82,7 +79,6 @@ namespace HikeManager.Views
             card.Controls.Add(_txtName);
             currentY += rowHeight;
 
-            // Локація
             Label lblLocation = CreateFieldLabel("Локація / Регіон:", 20, currentY);
             _txtLocation = new TextBox
             {
@@ -94,7 +90,6 @@ namespace HikeManager.Views
             card.Controls.Add(_txtLocation);
             currentY += rowHeight;
 
-            // Складність
             Label lblDifficulty = CreateFieldLabel("Складність *:", 20, currentY);
             _cboDifficulty = new ComboBox
             {
@@ -108,7 +103,6 @@ namespace HikeManager.Views
             card.Controls.Add(_cboDifficulty);
             currentY += rowHeight;
 
-            // Тривалість (дні)
             Label lblDuration = CreateFieldLabel("Тривалість (днів) *:", 20, currentY);
             _numDurationDays = new NumericUpDown
             {
@@ -122,7 +116,6 @@ namespace HikeManager.Views
             card.Controls.Add(_numDurationDays);
             currentY += rowHeight;
 
-            // Довжина (км)
             Label lblLength = CreateFieldLabel("Довжина (км):", 20, currentY);
             _numLengthKm = new NumericUpDown
             {
@@ -138,7 +131,6 @@ namespace HikeManager.Views
             card.Controls.Add(_numLengthKm);
             currentY += rowHeight + 10;
 
-            // Кнопки
             Button btnSave = new Button
             {
                 Text = "Зберегти",

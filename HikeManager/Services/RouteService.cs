@@ -8,7 +8,7 @@ namespace HikeManager.Services
     public class RouteService : IRouteService
     {
         private readonly RouteRepository _repository;
-        private static readonly HashSet<string> AllowedDifficulties = new(StringComparer.OrdinalIgnoreCase)
+        public static readonly HashSet<string> AllowedDifficulties = new(StringComparer.OrdinalIgnoreCase)
         {
             "Легкий",
             "Середній",
@@ -73,7 +73,6 @@ namespace HikeManager.Services
                 throw new ValidationException("Маршрут не знайдено.");
             }
 
-            // М'яке видалення: переносимо в історію
             _repository.SoftDelete(id);
         }
 
@@ -109,7 +108,7 @@ namespace HikeManager.Services
             int countHikes = _repository.CountHikesUsingRoute(id);
             if (countHikes > 0)
             {
-                throw new ValidationException($"Неможливо остаточно видалити маршрут «{existing.Name}», оскільки він використовується у {countHikes} активному поході(ах).");
+                throw new ValidationException($"Неможливо остаточно видалити маршрут «{existing.Name}», оскільки він використовується у {countHikes} поході(ах).");
             }
 
             _repository.Delete(id);
