@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using HikeManager.Models;
@@ -24,7 +24,7 @@ namespace HikeManager.DataAccess
                             {
                                 Id = reader.GetInt32(0),
                                 HikeId = reader.GetInt32(1),
-                                FullName = reader.IsDBNull(2) ? null : reader.GetString(2),
+                                FullName = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
                                 Phone = reader.IsDBNull(3) ? null : reader.GetString(3),
                                 Note = reader.IsDBNull(4) ? null : reader.GetString(4)
                             });
@@ -44,8 +44,8 @@ namespace HikeManager.DataAccess
                 {
                     command.Parameters.AddWithValue("@hikeId", p.HikeId);
                     command.Parameters.AddWithValue("@fullName", p.FullName);
-                    command.Parameters.AddWithValue("@phone", (object)p.Phone ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@note", (object)p.Note ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@phone", (object?)p.Phone ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@note", (object?)p.Note ?? DBNull.Value);
                     command.ExecuteNonQuery();
                 }
             }
@@ -59,8 +59,8 @@ namespace HikeManager.DataAccess
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@fullName", p.FullName);
-                    command.Parameters.AddWithValue("@phone", (object)p.Phone ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@note", (object)p.Note ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@phone", (object?)p.Phone ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@note", (object?)p.Note ?? DBNull.Value);
                     command.Parameters.AddWithValue("@id", p.Id);
                     command.ExecuteNonQuery();
                 }
