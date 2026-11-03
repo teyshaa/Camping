@@ -6,10 +6,24 @@ namespace HikeManager.DataAccess
 {
     public static class DbConnectionFactory
     {
-        private static readonly string DbPath = Path.Combine(AppContext.BaseDirectory, "hikemanager.db");
-        public static readonly string ConnectionString = $"Data Source={DbPath};Version=3;";
+        private static readonly string DefaultDbPath = Path.Combine(AppContext.BaseDirectory, "hikemanager.db");
+        private static string? _customDbPath;
+        private static string? _customConnectionString;
 
-        public static string DatabasePath => DbPath;
+        public static string DatabasePath => _customDbPath ?? DefaultDbPath;
+        public static string ConnectionString => _customConnectionString ?? $"Data Source={DatabasePath};Version=3;";
+
+        public static void SetCustomDatabasePath(string path)
+        {
+            _customDbPath = path;
+            _customConnectionString = $"Data Source={path};Version=3;";
+        }
+
+        public static void ResetToDefault()
+        {
+            _customDbPath = null;
+            _customConnectionString = null;
+        }
 
         public static SQLiteConnection CreateOpenConnection()
         {
