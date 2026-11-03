@@ -157,5 +157,19 @@ namespace HikeManager.Tests.Services
             var ex = Assert.Throws<ValidationException>(() => _service.HardDelete(route.Id));
             Assert.Contains("використовується", ex.Message);
         }
+
+        [Fact]
+        public void HardDelete_RouteUsedInHistoricalHike_ThrowsValidationException()
+        {
+            var route = TestDataFactory.CreateValidRoute(name: "Маршрут з архівним походом");
+            _service.Add(route);
+
+            var hikeRepo = new HikeRepository();
+            var hike = TestDataFactory.CreateValidHike(route.Id, "Архівний похід", isDeleted: true);
+            hikeRepo.Insert(hike);
+
+            var ex = Assert.Throws<ValidationException>(() => _service.HardDelete(route.Id));
+            Assert.Contains("використовується", ex.Message);
+        }
     }
 }
