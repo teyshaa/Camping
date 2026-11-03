@@ -5,19 +5,17 @@ namespace HikeManager
 {
     public static class Theme
     {
-        // Фірмові кольори проєкту
-        public static readonly Color PrimaryColor = Color.FromArgb(40, 75, 60);         // Темно-зелений
-        public static readonly Color BackgroundColor = Color.FromArgb(235, 245, 235);   // Світло-зелений фон
-        public static readonly Color SidebarHover = Color.FromArgb(52, 96, 78);         // Підсвічування кнопки меню
-        public static readonly Color SidebarActive = Color.FromArgb(30, 58, 46);        // Активна кнопка меню
-        public static readonly Color CardBackground = Color.White;                      // Фон карток та таблиць
-        public static readonly Color TextPrimary = Color.FromArgb(35, 45, 40);          // Основний текст
-        public static readonly Color TextMuted = Color.FromArgb(100, 115, 105);         // Другорядний текст
-        public static readonly Color BorderColor = Color.FromArgb(205, 220, 210);       // Лінії та рамки
-        public static readonly Color DangerColor = Color.FromArgb(185, 45, 45);         // Кнопка видалення / помилка
+        public static readonly Color PrimaryColor = Color.FromArgb(40, 75, 60);
+        public static readonly Color BackgroundColor = Color.FromArgb(235, 245, 235);
+        public static readonly Color SidebarHover = Color.FromArgb(52, 96, 78);
+        public static readonly Color SidebarActive = Color.FromArgb(30, 58, 46);
+        public static readonly Color CardBackground = Color.White;
+        public static readonly Color TextPrimary = Color.FromArgb(35, 45, 40);
+        public static readonly Color TextMuted = Color.FromArgb(100, 115, 105);
+        public static readonly Color BorderColor = Color.FromArgb(205, 220, 210);
+        public static readonly Color DangerColor = Color.FromArgb(185, 45, 45);
         public static readonly Color DangerHover = Color.FromArgb(160, 35, 35);
 
-        // Типографіка (Segoe UI)
         public static readonly Font TitleFont = new Font("Segoe UI", 20, FontStyle.Bold);
         public static readonly Font SubtitleFont = new Font("Segoe UI", 14, FontStyle.Bold);
         public static readonly Font HeaderFont = new Font("Segoe UI", 11, FontStyle.Bold);
@@ -77,14 +75,12 @@ namespace HikeManager
             grid.RowTemplate.Height = 36;
             grid.Font = RegularFont;
 
-            // Заголовок
             grid.ColumnHeadersDefaultCellStyle.BackColor = PrimaryColor;
             grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             grid.ColumnHeadersDefaultCellStyle.Font = HeaderFont;
             grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(6);
             grid.ColumnHeadersHeight = 40;
 
-            // Рядки
             grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(215, 235, 225);
             grid.DefaultCellStyle.SelectionForeColor = TextPrimary;
             grid.DefaultCellStyle.Padding = new Padding(4);

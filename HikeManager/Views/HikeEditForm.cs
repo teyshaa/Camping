@@ -7,14 +7,8 @@ using HikeManager.Services;
 
 namespace HikeManager.Views
 {
-    /// <summary>
-    /// Форма для створення нового та редагування існуючого походу.
-    /// Зберігає дані через HikeService; перехоплює ValidationException.
-    /// Жодного SQL у View — усі дані надходять через сервісний шар.
-    /// </summary>
     public class HikeEditForm : Form
     {
-        // ── Поля ──────────────────────────────────────────────────────────
         private readonly IHikeService  _hikeService;
         private readonly IRouteService _routeService;
         private readonly Hike          _hike;
@@ -26,7 +20,6 @@ namespace HikeManager.Views
         private readonly Button         _btnSave;
         private readonly ErrorProvider  _errorProvider;
 
-        // ── Конструктор ───────────────────────────────────────────────────
         public HikeEditForm(Hike?          existingHike = null,
                             IHikeService?  hikeService  = null,
                             IRouteService? routeService = null)
@@ -35,7 +28,6 @@ namespace HikeManager.Views
             _routeService = routeService ?? new RouteService();
             _isEditMode   = existingHike != null;
 
-            // Копія даних, щоб не мутувати оригінал до збереження
             _hike = _isEditMode
                 ? new Hike
                   {
@@ -48,7 +40,6 @@ namespace HikeManager.Views
 
             _errorProvider = new ErrorProvider { BlinkStyle = ErrorBlinkStyle.NeverBlink };
 
-            // ── Параметри форми ───────────────────────────────────────────
             Text            = _isEditMode ? "Редагування походу" : "Новий похід";
             Size            = new Size(500, 360);
             StartPosition   = FormStartPosition.CenterParent;
@@ -58,7 +49,6 @@ namespace HikeManager.Views
             BackColor       = Color.FromArgb(235, 245, 235);
             Font            = new Font("Segoe UI", 10f, FontStyle.Regular);
 
-            // ── Картка з полями ───────────────────────────────────────────
             Panel card = new Panel
             {
                 BackColor = Theme.CardBackground,
@@ -78,17 +68,15 @@ namespace HikeManager.Views
             card.Controls.Add(lblFormTitle);
 
             int      y     = 62;
-            const int IX   = 175;   // X початку поля вводу
-            const int IW   = 240;   // ширина поля вводу
-            const int RH   = 48;    // висота рядка
+            const int IX   = 175;
+            const int IW   = 240;
+            const int RH   = 48;
 
-            // ── Поле: Назва ───────────────────────────────────────────────
             card.Controls.Add(MakeLabel("Назва походу *:", 20, y));
             _txtName = new TextBox { Location = new Point(IX, y - 2), Width = IW, Text = _hike.Name };
             card.Controls.Add(_txtName);
             y += RH;
 
-            // ── Поле: Дата початку ────────────────────────────────────────
             card.Controls.Add(MakeLabel("Дата початку *:", 20, y));
             _dtpStartDate = new DateTimePicker
             {
@@ -101,20 +89,18 @@ namespace HikeManager.Views
             card.Controls.Add(_dtpStartDate);
             y += RH;
 
-            // ── Поле: Маршрут (ComboBox) ──────────────────────────────────
             card.Controls.Add(MakeLabel("Маршрут *:", 20, y));
             _cboRoute = new ComboBox
             {
                 Location      = new Point(IX, y - 2),
                 Width         = IW,
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                DisplayMember = "Name",   // відображається назва маршруту
-                ValueMember   = "Id"      // значення — Id маршруту
+                DisplayMember = "Name",
+                ValueMember   = "Id"
             };
             card.Controls.Add(_cboRoute);
             y += RH + 10;
 
-            // «Зберегти» — кнопка головної дії
             _btnSave = new Button
             {
                 Text         = "Зберегти",
@@ -131,7 +117,6 @@ namespace HikeManager.Views
             _btnSave.Height                    = 38;
             _btnSave.Click += BtnSave_Click;
 
-            // «Скасувати» — другорядна кнопка
             Button btnCancel = new Button
             {
                 Text         = "Скасувати",
@@ -155,11 +140,9 @@ namespace HikeManager.Views
             AcceptButton = _btnSave;
             CancelButton = btnCancel;
 
-            // Завантажуємо маршрути після побудови UI
             LoadRoutes();
         }
 
-        // ── Завантаження маршрутів у ComboBox ────────────────────────────
         private void LoadRoutes()
         {
             try
@@ -168,7 +151,6 @@ namespace HikeManager.Views
 
                 if (routes.Count == 0)
                 {
-                    // Немає маршрутів — блокуємо збереження та пояснюємо чому
                     _btnSave.Enabled = false;
                     _cboRoute.Enabled = false;
 
@@ -185,12 +167,10 @@ namespace HikeManager.Views
                 _cboRoute.DisplayMember = "Name";
                 _cboRoute.ValueMember   = "Id";
 
-                // Режим редагування — відновлюємо раніше збережений маршрут
                 if (_isEditMode && _hike.RouteId > 0)
                 {
                     _cboRoute.SelectedValue = _hike.RouteId;
 
-                    // Якщо маршрут було видалено з БД — залишаємо перший у списку
                     if (_cboRoute.SelectedValue == null ||
                         (int)_cboRoute.SelectedValue != _hike.RouteId)
                     {
@@ -212,12 +192,10 @@ namespace HikeManager.Views
             }
         }
 
-        // ── Збереження ────────────────────────────────────────────────────
         private void BtnSave_Click(object? sender, EventArgs e)
         {
             _errorProvider.Clear();
 
-            // Клієнтська перевірка обов'язкових полів до звернення до сервісу
             bool hasError = false;
 
             if (string.IsNullOrWhiteSpace(_txtName.Text))
@@ -234,7 +212,6 @@ namespace HikeManager.Views
 
             if (hasError) return;
 
-            // Заповнюємо об'єкт даними з форми
             _hike.Name      = _txtName.Text.Trim();
             _hike.StartDate = _dtpStartDate.Value.Date;
             _hike.RouteId   = (int)_cboRoute.SelectedValue!;
@@ -251,7 +228,6 @@ namespace HikeManager.Views
             }
             catch (ValidationException valEx)
             {
-                // Помилки валідації з сервісу — показуємо українською
                 MessageBox.Show(
                     valEx.Message,
                     "Помилка валідації",
@@ -268,7 +244,6 @@ namespace HikeManager.Views
             }
         }
 
-        // ── Допоміжний метод: підписний лейбл поля ───────────────────────
         private static Label MakeLabel(string text, int x, int y) =>
             new Label
             {

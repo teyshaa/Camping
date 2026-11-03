@@ -77,7 +77,6 @@ namespace HikeManager.Views
                 Margin    = new Padding(0, 0, 0, 16)
             };
 
-            // Назва походу — великий заголовок
             Label lblName = new Label
             {
                 Text      = _hike.Name,
@@ -136,7 +135,6 @@ namespace HikeManager.Views
             return tabs;
         }
 
-        // ── Вкладка «Учасники» 
         private TabPage BuildParticipantsTab()
         {
             var page = new TabPage("👥  Учасники") { BackColor = Theme.BackgroundColor };
@@ -146,7 +144,6 @@ namespace HikeManager.Views
             return page;
         }
 
-        // ── Вкладка «Спорядження» 
         private TabPage BuildEquipmentTab()
         {
             var page = new TabPage("🎒  Спорядження") { BackColor = Theme.BackgroundColor };
@@ -156,7 +153,6 @@ namespace HikeManager.Views
             return page;
         }
 
-        // ── Вкладка «Фінанси» 
         private TabPage BuildFinancesTab()
         {
             var page = new TabPage("💰  Фінанси") { BackColor = Theme.BackgroundColor };
@@ -179,7 +175,6 @@ namespace HikeManager.Views
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
-            // Опис
             Label lblDesc = new Label
             {
                 Text      = description,

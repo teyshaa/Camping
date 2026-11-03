@@ -16,8 +16,6 @@ namespace HikeManager.DataAccess
             var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
 
-            // SQLite за замовчуванням вимикає перевірку зовнішніх ключів.
-            // Виконуємо PRAGMA foreign_keys = ON, щоб працював ON DELETE CASCADE.
             using (var command = new SQLiteCommand("PRAGMA foreign_keys = ON;", connection))
             {
                 command.ExecuteNonQuery();

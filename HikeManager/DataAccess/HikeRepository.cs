@@ -10,7 +10,6 @@ namespace HikeManager.DataAccess
     {
         private const string DateFormat = "yyyy-MM-dd";
 
-        // GetAll — повертає всі походи з LEFT JOIN на ROUTES
         public List<Hike> GetAll()
         {
             var hikes = new List<Hike>();
@@ -41,7 +40,6 @@ namespace HikeManager.DataAccess
             return hikes;
         }
 
-        // GetById — повертає один похід або null
         public Hike? GetById(int id)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -74,7 +72,6 @@ namespace HikeManager.DataAccess
             return null;
         }
 
-        // Insert — додає новий похід, встановлює Id у переданому об'єкті
         public void Insert(Hike hike)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -97,7 +94,6 @@ namespace HikeManager.DataAccess
             }
         }
 
-        // Update — оновлює існуючий запис
         public void Update(Hike hike)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -124,7 +120,6 @@ namespace HikeManager.DataAccess
             }
         }
 
-        // SoftDelete — позначає похід як видалений (переносить в історію)
         public void SoftDelete(int id)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -139,7 +134,6 @@ namespace HikeManager.DataAccess
             }
         }
 
-        // Restore — відновлює похід з історії у активні
         public void Restore(int id)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -154,7 +148,6 @@ namespace HikeManager.DataAccess
             }
         }
 
-        // Delete — остаточно видаляє похід за Id з БД
         public void Delete(int id)
         {
             using (var connection = DbConnectionFactory.CreateOpenConnection())
@@ -169,7 +162,6 @@ namespace HikeManager.DataAccess
             }
         }
 
-        // Приватний маппер рядка → Hike
         private static Hike MapRowToHike(SQLiteDataReader reader)
         {
             bool isDeleted = false;

@@ -12,7 +12,6 @@ namespace HikeManager.DataAccess
             {
                 using (var connection = DbConnectionFactory.CreateOpenConnection())
                 {
-                    // 1. Створення таблиць
                     string createTables = @"
                         CREATE TABLE IF NOT EXISTS ROUTES (
                             Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,14 +66,11 @@ namespace HikeManager.DataAccess
 
                     ExecuteCommand(createTables, connection);
 
-                    // Міграція для вже існуючих БД: додаємо стовпчик IsDeleted, якщо його ще немає
                     EnsureColumnExists(connection, "HIKES", "IsDeleted", "INTEGER NOT NULL DEFAULT 0");
                     EnsureColumnExists(connection, "ROUTES", "IsDeleted", "INTEGER NOT NULL DEFAULT 0");
 
-                    // 3. Засівання демо-маршрутів, якщо таблиця ROUTES порожня
                     SeedDemoRoutesIfEmpty(connection);
 
-                    // 4. Засівання демо-походів, учасників та спорядження, якщо таблиця HIKES порожня
                     SeedDemoHikesIfEmpty(connection);
                 }
             }
@@ -94,14 +90,13 @@ namespace HikeManager.DataAccess
                     while (reader.Read())
                     {
                         if (string.Equals(reader["name"]?.ToString(), column, StringComparison.OrdinalIgnoreCase))
-                            return; // Стовпчик уже існує
+                            return;
                     }
                 }
                 ExecuteCommand($"ALTER TABLE {table} ADD COLUMN {column} {columnDef};", connection);
             }
             catch
             {
-                // Якщо помилка (наприклад, колонка вже є) — не ламаємо запуск
             }
         }
 
@@ -130,7 +125,6 @@ namespace HikeManager.DataAccess
                 long count = Convert.ToInt64(checkCmd.ExecuteScalar());
                 if (count == 0)
                 {
-                    // Отримуємо реальні Id маршрутів із бази для запобігання помилки Foreign Key
                     var routeIds = new List<int>();
                     using (var routeCmd = new SQLiteCommand("SELECT Id FROM ROUTES ORDER BY Id ASC LIMIT 2;", connection))
                     using (var reader = routeCmd.ExecuteReader())
@@ -157,7 +151,6 @@ namespace HikeManager.DataAccess
 
                         long hikeId = connection.LastInsertRowId;
 
-                        // Якщо є другий маршрут, додамо й архівний похід
                         if (routeIds.Count > 1)
                         {
                             string pastStr = DateTime.Today.AddMonths(-1).ToString("yyyy-MM-dd");

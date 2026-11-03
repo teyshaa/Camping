@@ -73,7 +73,6 @@ namespace HikeManager.Services
                 throw new ValidationException("Маршрут не знайдено.");
             }
 
-            // М'яке видалення: переносимо в історію
             _repository.SoftDelete(id);
         }
 
