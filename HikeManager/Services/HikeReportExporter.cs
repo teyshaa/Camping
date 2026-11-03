@@ -1,4 +1,3 @@
-﻿
 using System;
 using System.Linq;
 using System.Text;
@@ -8,10 +7,22 @@ namespace HikeManager.Services
 {
     public class HikeReportExporter
     {
-        private readonly ParticipantService _participants = new();
-        private readonly EquipmentService _equipment = new();
-        private readonly ExpenseService _expenses = new();
-        private readonly RouteService _routes = new();
+        private readonly ParticipantService _participants;
+        private readonly EquipmentService _equipment;
+        private readonly ExpenseService _expenses;
+        private readonly RouteService _routes;
+
+        public HikeReportExporter(
+            ParticipantService? participants = null,
+            EquipmentService? equipment = null,
+            ExpenseService? expenses = null,
+            RouteService? routes = null)
+        {
+            _participants = participants ?? new();
+            _equipment = equipment ?? new();
+            _expenses = expenses ?? new();
+            _routes = routes ?? new();
+        }
 
         public string Generate(Hike hike)
         {
