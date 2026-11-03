@@ -124,5 +124,42 @@ namespace HikeManager.Tests.Services
 
             Assert.Equal(EquipmentService.DefaultBasicKit.Count - 1, added);
         }
+
+        [Fact]
+        public void Save_WhenIdIsZero_AddsItem_WhenIdNonZero_UpdatesItem()
+        {
+            var item = new EquipmentItem { HikeId = _validHikeId, Name = "Сірники", Quantity = 5 };
+            _service.Save(item);
+
+            var list = _service.GetByHike(_validHikeId);
+            var saved = list.Find(x => x.Name == "Сірники");
+            Assert.NotNull(saved);
+
+            saved!.Quantity = 10;
+            _service.Save(saved);
+
+            var updatedList = _service.GetByHike(_validHikeId);
+            var updated = updatedList.Find(x => x.Id == saved.Id);
+            Assert.NotNull(updated);
+            Assert.Equal(10, updated!.Quantity);
+
+            _service.Delete(saved.Id);
+            Assert.DoesNotContain(_service.GetByHike(_validHikeId), x => x.Id == saved.Id);
+        }
+
+        [Fact]
+        public void Update_ToExistingNameOfOtherItem_ThrowsValidationException()
+        {
+            _service.Add(new EquipmentItem { HikeId = _validHikeId, Name = "Сокира", Quantity = 1 });
+            _service.Add(new EquipmentItem { HikeId = _validHikeId, Name = "Пилка", Quantity = 1 });
+
+            var items = _service.GetByHike(_validHikeId);
+            var axe = items.Find(x => x.Name == "Сокира");
+            var saw = items.Find(x => x.Name == "Пилка");
+
+            saw!.Name = "Сокира";
+            var ex = Assert.Throws<ValidationException>(() => _service.Update(saw));
+            Assert.Contains("уже існує", ex.Message);
+        }
     }
 }

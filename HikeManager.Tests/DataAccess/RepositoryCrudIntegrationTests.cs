@@ -98,6 +98,45 @@ namespace HikeManager.Tests.DataAccess
             Assert.Equal("Мар'ян Дем'янчук-Лук'яненко", loaded!.FullName);
             Assert.Null(loaded.Phone);
             Assert.Null(loaded.Note);
+
+            loaded.Phone = "+380509998877";
+            loaded.Note = "Оновлена примітка";
+            _partRepo.Update(loaded);
+
+            var updatedList = _partRepo.GetByHike(hike.Id);
+            var updated = updatedList.Find(p => p.Id == loaded.Id);
+            Assert.NotNull(updated);
+            Assert.Equal("+380509998877", updated!.Phone);
+            Assert.Equal("Оновлена примітка", updated.Note);
+
+            _partRepo.Delete(loaded.Id);
+            Assert.DoesNotContain(_partRepo.GetByHike(hike.Id), p => p.Id == loaded.Id);
+        }
+
+        [Fact]
+        public void HikeRepository_UpdateSoftDeleteAndRestore_WorkCorrectly()
+        {
+            var route = TestDataFactory.CreateValidRoute();
+            _routeRepo.Insert(route);
+
+            var hike = TestDataFactory.CreateValidHike(route.Id, "Похід для оновлення");
+            _hikeRepo.Insert(hike);
+
+            hike.Name = "Похід нова назва";
+            _hikeRepo.Update(hike);
+            var loaded = _hikeRepo.GetById(hike.Id);
+            Assert.NotNull(loaded);
+            Assert.Equal("Похід нова назва", loaded!.Name);
+
+            _hikeRepo.SoftDelete(hike.Id);
+            var archived = _hikeRepo.GetById(hike.Id);
+            Assert.NotNull(archived);
+            Assert.True(archived!.IsDeleted);
+
+            _hikeRepo.Restore(hike.Id);
+            var restored = _hikeRepo.GetById(hike.Id);
+            Assert.NotNull(restored);
+            Assert.False(restored!.IsDeleted);
         }
 
         [Fact]

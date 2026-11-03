@@ -126,5 +126,25 @@ namespace HikeManager.Tests.Services
             int after = _service.CountByHike(_validHikeId);
             Assert.Equal(before + 2, after);
         }
+
+        [Fact]
+        public void Save_WhenIdIsZero_CallsAdd_WhenIdNonZero_CallsUpdate()
+        {
+            var p = TestDataFactory.CreateValidParticipant(_validHikeId, "Учасник Save", "+380501112233");
+            _service.Save(p);
+
+            var list = _service.GetByHike(_validHikeId);
+            var saved = list.Find(x => x.FullName == "Учасник Save");
+            Assert.NotNull(saved);
+
+            saved!.FullName = "Учасник Save Оновлений";
+            _service.Save(saved);
+
+            var updatedList = _service.GetByHike(_validHikeId);
+            Assert.Contains(updatedList, x => x.FullName == "Учасник Save Оновлений");
+
+            _service.Delete(saved.Id);
+            Assert.DoesNotContain(_service.GetByHike(_validHikeId), x => x.Id == saved.Id);
+        }
     }
 }
