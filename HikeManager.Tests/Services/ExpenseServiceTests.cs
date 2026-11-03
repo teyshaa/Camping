@@ -107,3 +107,4 @@ namespace HikeManager.Tests.Services
         }
     }
 }
+

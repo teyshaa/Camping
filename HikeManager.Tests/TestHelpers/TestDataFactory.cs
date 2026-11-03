@@ -85,3 +85,4 @@ namespace HikeManager.Tests.TestHelpers
         }
     }
 }
+

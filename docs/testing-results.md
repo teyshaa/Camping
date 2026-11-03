@@ -114,3 +114,4 @@ dotnet test HikeManager.Tests/HikeManager.Tests.csproj --collect:"XPlat Code Cov
 dotnet run --project HikeManager/HikeManager.csproj
 ```
 *Що показати:* Відкривається застосунок `HikeManager`. Показати документ `docs/manual-test-checklist.md`, продемонструвати додавання спорядження (перевірка дублікатів зі сумуванням) та розрахунок бюджету у вкладці «Витрати».
+

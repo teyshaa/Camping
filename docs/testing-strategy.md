@@ -93,3 +93,4 @@ dotnet test HikeManager.Tests/HikeManager.Tests.csproj --collect:"XPlat Code Cov
 ```powershell
 dotnet test HikeManager.Tests/HikeManager.Tests.csproj --filter "Category=EdgeCase"
 ```
+

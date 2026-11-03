@@ -118,3 +118,4 @@ namespace HikeManager.Tests.Services
         }
     }
 }
+

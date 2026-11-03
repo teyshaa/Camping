@@ -90,3 +90,4 @@ namespace HikeManager.Tests.DataAccess
         }
     }
 }
+
