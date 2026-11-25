@@ -4,6 +4,14 @@
 
 ---
 
+## Автоматична перевірка в GitHub Actions
+
+Workflow `.github/workflows/ci.yml` запускається після push у `main` або гілку `feature/**`, при створенні чи оновленні pull request до `main`, а також вручну через **Actions > Build and test > Run workflow**. На Windows він відновлює залежності, збирає solution у конфігурації Release та запускає всі xUnit-тести зі збором покриття. Результати тестів (`.trx`) і покриття (`coverage.cobertura.xml`) доступні в артефакті `test-results-and-coverage` на сторінці запуску.
+
+Для демонстрації відкрийте вкладку **Actions**, виберіть успішний запуск **Build and test** і покажіть кроки **Build solution** та **Run tests and collect coverage**. Workflow запускає лише тестовий проєкт; ручний чек-лист WinForms наведено в `docs/manual-test-checklist.md`.
+
+---
+
 ## 1. Загальний огляд проведеної роботи
 
 У рамках етапу 7 було створено тестовий проєкт **`HikeManager.Tests`** (xUnit, .NET 8 Windows), який підключено до загального solution `HikeManager.sln`.
