@@ -20,10 +20,10 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
 
       - name: Set up .NET 8
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6.1.0
         with:
           dotnet-version: '8.0.x'
 
@@ -38,7 +38,7 @@ jobs:
 
       - name: Upload test results and coverage
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: test-results-and-coverage
           path: HikeManager.Tests/TestResults/

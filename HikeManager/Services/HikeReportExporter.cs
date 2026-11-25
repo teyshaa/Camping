@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using HikeManager.Models;
@@ -7,6 +8,7 @@ namespace HikeManager.Services
 {
     public class HikeReportExporter
     {
+        private static readonly CultureInfo ReportCulture = CultureInfo.GetCultureInfo("uk-UA");
         private readonly ParticipantService _participants;
         private readonly EquipmentService _equipment;
         private readonly ExpenseService _expenses;
@@ -87,7 +89,7 @@ namespace HikeManager.Services
             foreach (var e in expenses)
             {
                 sb.AppendLine(
-                    $"- {e.Category}: {e.Amount:N2} грн");
+                    $"- {e.Category}: {e.Amount.ToString("N2", ReportCulture)} грн");
 
                 if (!string.IsNullOrWhiteSpace(e.Description))
                     sb.AppendLine($"  Опис: {e.Description}");
@@ -96,13 +98,13 @@ namespace HikeManager.Services
             sb.AppendLine();
             sb.AppendLine("5. БЮДЖЕТ");
             sb.AppendLine(
-                $"Загальний бюджет: {budget.TotalBudget:N2} грн");
+                $"Загальний бюджет: {budget.TotalBudget.ToString("N2", ReportCulture)} грн");
 
             if (budget.HasNoParticipants)
                 sb.AppendLine("На людину: немає учасників");
             else
                 sb.AppendLine(
-                    $"На людину: {budget.CostPerPerson:N2} грн");
+                    $"На людину: {budget.CostPerPerson.ToString("N2", ReportCulture)} грн");
 
             sb.AppendLine();
             sb.AppendLine("Витрати за категоріями:");
@@ -112,7 +114,7 @@ namespace HikeManager.Services
                 decimal amount = budget.CategoryTotals
                     .GetValueOrDefault(category, 0m);
 
-                sb.AppendLine($"- {category}: {amount:N2} грн");
+                sb.AppendLine($"- {category}: {amount.ToString("N2", ReportCulture)} грн");
             }
 
             sb.AppendLine();

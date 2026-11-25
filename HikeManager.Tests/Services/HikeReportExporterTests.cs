@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using HikeManager.DataAccess;
 using HikeManager.Models;
 using HikeManager.Services;
@@ -69,7 +70,17 @@ namespace HikeManager.Tests.Services
         [Fact]
         public void Generate_ValidHike_ProducesCompleteTextReport()
         {
-            string report = _exporter.Generate(_testHike);
+            var originalCulture = CultureInfo.CurrentCulture;
+            string report;
+            try
+            {
+                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+                report = _exporter.Generate(_testHike);
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = originalCulture;
+            }
 
             Assert.Contains("ЗВІТ ПРО ГІРСЬКИЙ ПОХІД", report);
             Assert.Contains("Великий похід", report);
